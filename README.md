@@ -30,9 +30,8 @@ graph TD
     Firewall --> Nginx[Nginx Reverse Proxy]
     Nginx --> Dashboard[Homepage / Dashboard]
     Nginx --> Pihole[Pi-hole DNS]
-    Nginx --> Grafana[Grafana / Prometheus]```
-
----
+    Nginx --> Grafana[Grafana / Prometheus]
+```
 
 ## Containerized Services (Docker Stack via Portainer)
 
