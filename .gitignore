@@ -1,0 +1,9 @@
+.env
+*.env
+*.key
+*.pem
+id_rsa*
+
+*.log
+*.db
+/data/
