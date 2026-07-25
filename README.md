@@ -29,8 +29,8 @@ graph TD
     Router --> Firewall[UFW Firewall]
     Firewall --> Nginx[Nginx Reverse Proxy]
     Nginx --> Dashboard[Homepage / Dashboard]
-    Nginx --> Pihole[Pi-hole DNS]
-    Nginx --> Grafana[Grafana / Prometheus]
+    Nginx --> AdGuardHome[AdGuard DNS]
+    Nginx --> Grafana[Grafana / Prometheus && Elastic Stack]
 ```
 
 ## Containerized Services (Docker Stack via Portainer)
