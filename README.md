@@ -23,6 +23,89 @@ Self-hosted home server running Ubuntu Server and Docker microservices accessed 
 * **Hardened Access:** Configured OpenSSH server with `sudoers` administrative privileges, backed by `fail2ban` brute-force IP jailing.
 * **Zero-Trust Remote VPN:** Integrated **Tailscale Mesh VPN** (`100.x.y.z` overlay) for encrypted remote access without opening dangerous router ports.
 
+graph TD
+    %% Internet & Core Network Hardware
+    Internet["☁️ Public Internet"]
+    Router["📡 Main Router / Gateway"]
+
+    %% Client Devices
+    subgraph Clients_Local ["🏠 Local LAN Clients"]
+        MainPC["🖥️ Main PC"]
+        LocalLaptop["💻 Local Laptop"]
+        LocalMobile["📱 Local Mobile"]
+    end
+
+    subgraph Clients_Remote ["🌐 Remote Clients (Outside Home)"]
+        RemoteLaptop["💻 Remote Laptop"]
+        RemoteMobile["📱 Remote Mobile"]
+    end
+
+    %% Host Server System Boundary
+    subgraph Server ["Host PC / Homelab Server"]
+
+        %% Core Network & Routing Containers
+        subgraph Net_Layer ["Core Network & Ingress"]
+            TS["Tailscale (VPN Mesh Node)"]
+            AGH["dGuard Home (DNS: Port 53 / Web: 3000)"]
+            NPM["Nginx Proxy Manager (Ports 80 / 443 / 81)"]
+        end
+
+        %% Hosted Docker Stacks
+        subgraph Stacks ["Docker Containers & Services"]
+            subgraph Stack_Core ["Core & Utility"]
+                FB["FileBrowser (Port 8080)"]
+                HP["Homepage (Port 8082)"]
+                UK["Uptime Kuma (Port 3001)"]
+                PT["Portainer (Port 9443)"]
+            end
+
+            subgraph Stack_Media ["Media & Personal Cloud"]
+                Immich["Immich Stack (Port 2283)"]
+                Manga["Manga Stack (Kavita, Transmission, Prowlarr)"]
+            end
+
+            subgraph Stack_SIEM ["Monitoring & SIEM"]
+                SIEM_Logs["Grafana + Loki + SIEM (Elasticsearch, Kibana)"]
+            end
+
+            subgraph Stack_Game ["Gaming & DB"]
+                MC["Minecraft Server (Port 25565)"]
+                Mongo["MongoDB + Mongo Express"]
+            end
+        end
+    end
+
+    %% --- CONNECTIONS & TRAFFIC FLOWS ---
+
+    %% Internet to Router
+    Internet <--> Router
+
+    %% DNS Traffic Flow
+    Clients_Local -->|All Local DNS Queries| AGH
+    AGH -->|Upstream DNS Requests| Internet
+
+    %% Local Traffic Access
+    Clients_Local -->|HTTP/HTTPS Web Requests| NPM
+    Clients_Local -->|Direct Game Connection| MC
+    Router <--> MainPC
+    Router <--> LocalLaptop
+    Router <--> LocalMobile
+    Router <--> Server
+
+    %% Remote Access via Tailscale
+    RemoteLaptop <-->|Encrypted Mesh Tunnel| TS
+    RemoteMobile <-->|Encrypted Mesh Tunnel| TS
+    TS -->|Internal Routing| NPM
+    TS -->|Direct Container Access| Stacks
+
+    %% Nginx Reverse Proxy Routing
+    NPM -->|Reverse Proxy| Stack_Core
+    NPM -->|Reverse Proxy| Stack_Media
+    NPM -->|Reverse Proxy| Stack_SIEM
+    NPM -->|Reverse Proxy| Mongo
+
+## NPM Role in Network
+
 ```mermaid
 graph TD
     Client[User / Web Browser] -->|HTTPS 443| NPM[Nginx Proxy Manager]
