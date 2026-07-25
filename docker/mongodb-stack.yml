@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=rahasiaMongo123
+    ports:
+      - "27017:27017"
+    volumes:
+      - /home/mardamar/mongodb/data:/data/db
+    # reduced the internal engine cache
+    command: --wiredTigerCacheSizeGB 1
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+        reservations:
+          memory: 500M
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo_express
+    environment:
+      - ME_CONFIG_MONGODB_URL="MONGODBCONFIGURL"
+      - ME_CONFIG_BASICAUTH_USERNAME="USERNAME"
+      - ME_CONFIG_BASICAUTH_PASSWORD="PASSWORD"
+    ports:
+      - "8083:8081"
+    deploy:
+      resources:
+        limits:
+          memory: 300M
+    restart: unless-stopped
+    depends_on:
+      - mongodb

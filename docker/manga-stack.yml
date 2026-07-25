@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jakarta
+      - USER="USER"
+      - PASS="PASS"
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    volumes:
+      - /mnt/PenyimpananCadangan/app-configs/transmission:/config
+      - /mnt/PenyimpananCadangan:/data
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    extra_hosts:
+      - "nyaa.si:186.2.163.20"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jakarta
+    ports:
+      - 9696:9696
+    volumes:
+      - /mnt/PenyimpananCadangan/app-configs/prowlarr:/config
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  kavita:
+    image: jvmilazz0/kavita:latest
+    container_name: kavita
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jakarta
+    ports:
+      - 5001:5000
+    volumes:
+      - /mnt/PenyimpananCadangan/manga-library:/manga
+      - /mnt/PenyimpananCadangan/app-configs/kavita:/kavita/config
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 512M

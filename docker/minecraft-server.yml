@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mc:
+    image: itzg/minecraft-server
+    container_name: mc-server
+    tty: true
+    stdin_open: true
+    ports:
+      - 25566:25565
+    environment:
+      EULA: "TRUE"
+      TYPE: "CUSTOM"
+      CUSTOM_SERVER: "/data/fabric-server-launch.jar"
+      ONLINE_MODE: "FALSE"
+      SERVER_PORT: 25565
+
+      MEMORY: "4G"
+      INIT_MEMORY: "1G"
+
+      JVM_OPTS: "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=20 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC"
+      OVERRIDE_SERVER_PROPERTIES: "true"
+    volumes:
+      - "/mnt/PenyimpananUtama/Folder Server/Minecraft Server/Server2:/data"
+
+    deploy:
+      resources:
+        limits:
+          memory: 3000M
+        reservations:
+          memory: 1000M
+    restart: unless-stopped

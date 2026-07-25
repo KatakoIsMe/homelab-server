@@ -1,0 +1,56 @@
+name: immich
+
+services:
+  immich-server:
+    container_name: immich_server
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+    volumes:
+      - ${UPLOAD_LOCATION}:/data
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - stack.env
+    environment:
+      - IMMICH_MACHINE_LEARNING_ENABLED=false
+      - IMMICH_MACHINE_LEARNING_URL=false
+    ports:
+      - '2283:2283'
+    depends_on:
+      - redis
+      - database
+    deploy:
+      resources:
+        limits:
+          memory: 1500M   # dropped from 2000M since it doesn't need to hand jobs off to ML
+        reservations:
+          memory: 500M
+    restart: always
+
+  redis:
+    container_name: immich_redis
+    image: docker.io/valkey/valkey:9@sha256:3b55fbaa0cd93cf0d9d961f405e4dfcc70efe325e2d84da207a0a8e6d8fde4f9
+    deploy:
+      resources:
+        limits:
+          memory: 250M
+    healthcheck:
+      test: redis-cli ping || exit 1
+    restart: always
+
+  database:
+    container_name: immich_postgres
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+    volumes:
+      - ${DB_DATA_LOCATION}:/var/lib/postgresql/data
+    shm_size: 256mb
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+        reservations:
+          memory: 250M
+    restart: always

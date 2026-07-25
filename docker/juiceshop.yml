@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  juice-shop:
+    image: bkimminich/juice-shop
+    container_name: owasp_juice_shop
+    ports:
+      - "3002:3000/tcp"
+    restart: unless-stopped
