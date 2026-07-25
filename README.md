@@ -30,4 +30,27 @@ graph TD
     Firewall --> Nginx[Nginx Reverse Proxy]
     Nginx --> Dashboard[Homepage / Dashboard]
     Nginx --> Pihole[Pi-hole DNS]
-    Nginx --> Grafana[Grafana / Prometheus]
+    Nginx --> Grafana[Grafana / Prometheus]```
+
+---
+
+## Containerized Services (Docker Stack via Portainer)
+
+### 1. FileBrowser (Family Cloud NAS)
+
+* Web-based file management interface mapped to `/mnt/storage`.
+* Configured 30-day persistent sessions (`--token-expiration 720`) and mobile PWA home-screen shortcuts for non-technical family users.
+
+
+### 2. Samba (SMB Shares)
+
+* Exposes `/mnt/storage` as `[HomeCloud]` across local LAN and Tailnet.
+* Seamless network drive integration (`Z:\`) for Windows File Explorer and Linux Mint (`smb://`).
+
+### 3. AdGuard Home (Network-Wide DNS Blocker)
+
+* Intercepts DNS queries on Port 53; multi-upstream failover (Cloudflare, Google, Quad9) with disabled IPv6 resolution to eliminate DNS leaks.
+
+--- 
+
+
