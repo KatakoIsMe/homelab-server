@@ -23,6 +23,7 @@ Self-hosted home server running Ubuntu Server and Docker microservices accessed 
 * **Hardened Access:** Configured OpenSSH server with `sudoers` administrative privileges, backed by `fail2ban` brute-force IP jailing.
 * **Zero-Trust Remote VPN:** Integrated **Tailscale Mesh VPN** (`100.x.y.z` overlay) for encrypted remote access without opening dangerous router ports.
 
+```mermaid
 graph TD
     %% Internet & Core Network Hardware
     Internet["☁️ Public Internet"]
@@ -103,6 +104,7 @@ graph TD
     NPM -->|Reverse Proxy| Stack_Media
     NPM -->|Reverse Proxy| Stack_SIEM
     NPM -->|Reverse Proxy| Mongo
+```
 
 ## NPM Role in Network
 
