@@ -5,13 +5,13 @@ services:
     image: mongo:4.4
     container_name: mongodb
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=rahasiaMongo123
+      - MONGO_INITDB_ROOT_USERNAME="USERNAME"
+      - MONGO_INITDB_ROOT_PASSWORD="PASSWORD"
     ports:
       - "27017:27017"
     volumes:
       - /home/mardamar/mongodb/data:/data/db
-    # reduced the internal engine cache
+
     command: --wiredTigerCacheSizeGB 1
     deploy:
       resources:
