@@ -25,12 +25,23 @@ Self-hosted home server running Ubuntu Server and Docker microservices accessed 
 
 ```mermaid
 graph TD
-    Internet([Internet]) --> Router[Router / Gateway]
-    Router --> Firewall[UFW Firewall]
-    Firewall --> Nginx[Nginx Reverse Proxy]
-    Nginx --> Dashboard[Homepage / Dashboard]
-    Nginx --> AdGuardHome[AdGuard DNS]
-    Nginx --> Grafana[Grafana / Prometheus && Elastic Stack]
+    Client[User / Web Browser] -->|HTTPS 443| NPM[Nginx Proxy Manager]
+    
+    subgraph Core Utilities
+        NPM --> Homepage[Homepage Dashboard]
+        NPM --> AGH[AdGuard Home]
+        NPM --> FB[FileBrowser]
+    end
+
+    subgraph Media & Docs
+        NPM --> Immich[Immich Photo Server]
+        NPM --> Kavita[Kavita Reader]
+    end
+
+    subgraph Monitoring
+        NPM --> Grafana[Grafana Dashboard]
+        NPM --> Kibana[Kibana UI]
+    end
 ```
 
 ## Containerized Services (Docker Stack via Portainer)
